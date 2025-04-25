@@ -2,6 +2,10 @@ package org.dreemz.t1academy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dreemz.t1academy.TaskFilter;
+import org.dreemz.t1academy.aspect.annotation.ExceptionHandling;
+import org.dreemz.t1academy.aspect.annotation.LogAfterReturning;
+import org.dreemz.t1academy.aspect.annotation.LogBefore;
+import org.dreemz.t1academy.aspect.annotation.TimeMeasure;
 import org.dreemz.t1academy.dto.TaskDto;
 import org.dreemz.t1academy.entity.Task;
 import org.dreemz.t1academy.mapper.TaskMapper;
@@ -26,6 +30,8 @@ public class TaskController {
     private final TaskMapper taskMapper;
 
 
+    @ExceptionHandling
+    @TimeMeasure
     @PostMapping
     public TaskDto create(@RequestBody TaskDto dto) {
         if (dto.id() != null) {
@@ -37,6 +43,9 @@ public class TaskController {
         return taskMapper.toTaskDto(resultTask);
     }
 
+    @LogBefore
+    @ExceptionHandling
+    @TimeMeasure
     @GetMapping("/{id}")
     public TaskDto getOne(@PathVariable Long id) {
         Optional<Task> taskOptional = taskRepository.findById(id);
@@ -53,6 +62,8 @@ public class TaskController {
         return taskMapper.toTaskDto(task);
     }
 
+    @ExceptionHandling
+    @TimeMeasure
     @PutMapping("/{id}")
     public TaskDto update(@PathVariable Long id, @RequestBody TaskDto dto) {
         if (!dto.id().equals(id)) {
@@ -60,12 +71,14 @@ public class TaskController {
         }
 
         Task task = taskRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
         taskMapper.updateWithNull(dto, task);
         Task resultTask = taskRepository.save(task);
         return taskMapper.toTaskDto(resultTask);
     }
 
+    @LogAfterReturning
+    @TimeMeasure
     @GetMapping
     public PagedModel<TaskDto> getAll(@ModelAttribute TaskFilter filter, Pageable pageable) {
         Specification<Task> spec = filter.toSpecification();
