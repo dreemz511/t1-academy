@@ -17,7 +17,7 @@ public class LogAspect {
 
     @Before(value = "@annotation(org.dreemz.t1academy.aspect.annotation.LogBefore)")
     public void logBefore(JoinPoint joinPoint) {
-        log.info("Был вызван метод: {}", joinPoint.getSignature().getName());
+        log.info("Вызов метода: {}", joinPoint.getSignature().getName());
     }
 
     @AfterReturning(
@@ -54,7 +54,7 @@ public class LogAspect {
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long end = System.currentTimeMillis();
-        log.info("Время выполнения метода: {} ms", (end - start));
+        log.info("Время выполнения метода {}, {} ms",joinPoint.getSignature().getName(),(end - start));
         return result;
     }
 }
