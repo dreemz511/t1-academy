@@ -1,7 +1,7 @@
 package org.dreemz.t1academy.service;
 
 import lombok.AllArgsConstructor;
-import org.dreemz.t1academy.TaskFilter;
+import org.dreemz.t1academy.util.TaskFilter;
 import org.dreemz.t1academy.aspect.annotation.ExceptionHandling;
 import org.dreemz.t1academy.aspect.annotation.LogAfterReturning;
 import org.dreemz.t1academy.aspect.annotation.LogBefore;
@@ -42,9 +42,9 @@ public class TaskService {
     @LogBefore
     @ExceptionHandling
     public TaskDto getOne(Long id) {
-        Optional<Task> taskOptional = taskRepository.findById(id);
-        return taskMapper.toTaskDto(taskOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id))));
+        Task task = taskRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
+        return taskMapper.toTaskDto(task);
     }
 
     @LogBefore
