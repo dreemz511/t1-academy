@@ -3,7 +3,6 @@ package org.dreemz.t1academy.kafka;
 import lombok.extern.slf4j.Slf4j;
 import org.dreemz.t1academy.dto.KafkaTaskDto;
 import org.dreemz.t1academy.service.NotificationService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
