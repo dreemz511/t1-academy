@@ -76,10 +76,10 @@ public class KafkaConfig {
     private CommonErrorHandler errorHandler() {
         DefaultErrorHandler handler = new DefaultErrorHandler(new FixedBackOff(1000, 3));
         handler.addNotRetryableExceptions(IllegalStateException.class);
-        handler.setRetryListeners(((record, ex, deliveryAttempt) -> {
-            log.error("RetryListeners message: {}, offset: {}, deliveryAttempt: {}",
-                    ex.getMessage(), record.offset(), deliveryAttempt);
-        }));
+        handler.setRetryListeners(((record, ex, deliveryAttempt) ->
+                log.error("RetryListeners message: {}, offset: {}, deliveryAttempt: {}",
+                ex.getMessage(), record.offset(), deliveryAttempt))
+        );
         return handler;
     }
 
