@@ -1,6 +1,7 @@
 package org.dreemz.t1academy.service;
 
 import lombok.AllArgsConstructor;
+import org.dreemz.t1academy.kafka.KafkaProducerService;
 import org.dreemz.t1academy.util.TaskFilter;
 import org.dreemz.t1academy.aspect.annotation.ExceptionHandling;
 import org.dreemz.t1academy.aspect.annotation.LogAfterReturning;
@@ -25,6 +26,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     @LogBefore
     @ExceptionHandling
@@ -64,8 +66,14 @@ public class TaskService {
 
         Task task = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
+        String oldTitle = task.getTitle();
+
         taskMapper.updateWithNull(dto, task);
         Task resultTask = taskRepository.save(task);
+        if(!oldTitle.equals(dto.title())) {
+            kafkaProducerService.sendMessage(taskMapper.toKafkaTaskDto(task));
+        }
+
         return taskMapper.toTaskDto(resultTask);
     }
 

@@ -1,5 +1,6 @@
 package org.dreemz.t1academy.mapper;
 
+import org.dreemz.t1academy.dto.KafkaTaskDto;
 import org.dreemz.t1academy.dto.TaskDto;
 import org.dreemz.t1academy.entity.Task;
 import org.mapstruct.Mapper;
@@ -14,4 +15,8 @@ public interface TaskMapper {
     TaskDto toTaskDto(Task task);
 
     Task updateWithNull(TaskDto taskDto, @MappingTarget Task task);
+
+//    Task toEntity(KafkaTaskDto kafkaTaskDTO);
+
+    KafkaTaskDto toKafkaTaskDto(Task task);
 }
