@@ -66,7 +66,6 @@ public class TaskService {
 
         Task task = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
-        String oldTitle = task.getTitle();
 
         if (dto != null) {
             task.setId(dto.id());
