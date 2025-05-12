@@ -14,9 +14,5 @@ public interface TaskMapper {
 
     TaskDto toTaskDto(Task task);
 
-    Task updateWithNull(TaskDto taskDto, @MappingTarget Task task);
-
-//    Task toEntity(KafkaTaskDto kafkaTaskDTO);
-
     KafkaTaskDto toKafkaTaskDto(Task task);
 }
