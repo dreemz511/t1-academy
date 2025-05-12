@@ -8,10 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
+
     @Value("${spring.mail.username}")
-    String toAddress;
+    private String toAddress;
+
     @Value("${spring.mail.username}")
-    String fromAddress;
+    private String fromAddress;
+
     private final JavaMailSender mailSender;
 
     public NotificationService(JavaMailSender mailSender) {
@@ -19,7 +22,7 @@ public class NotificationService {
     }
 
     public void sendSimpleEmail(KafkaTaskDto dto) {
-        String message = "Task status with id `%d` was changed to `%s`".formatted(dto.id(), dto.title());
+        String message = "Task status with id `%d` was changed to `%s`".formatted(dto.id(), dto.status());
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(fromAddress);

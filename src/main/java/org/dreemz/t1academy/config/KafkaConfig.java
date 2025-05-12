@@ -28,8 +28,10 @@ public class KafkaConfig {
 
     @Value("${dreemz.kafka.topic.name}")
     private String topicName;
+
     @Value("${dreemz.kafka.boostrap-servers}")
     private String servers;
+
     @Value("${dreemz.kafka.consumer.group-id}")
     private String groupId;
 

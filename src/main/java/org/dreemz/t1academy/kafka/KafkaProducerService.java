@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerService {
     private final KafkaTemplate <String, KafkaTaskDto> kafkaTemplate;
     @Value("${dreemz.kafka.topic.name}")
-    String topic;
+    private String topic;
 
     public KafkaProducerService(KafkaTemplate<String, KafkaTaskDto> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;

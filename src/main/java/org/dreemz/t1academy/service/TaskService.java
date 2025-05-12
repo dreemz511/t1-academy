@@ -68,11 +68,19 @@ public class TaskService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
         String oldTitle = task.getTitle();
 
-        taskMapper.updateWithNull(dto, task);
-        Task resultTask = taskRepository.save(task);
-        if(!oldTitle.equals(dto.title())) {
-            kafkaProducerService.sendMessage(taskMapper.toKafkaTaskDto(task));
+        if (dto != null) {
+            task.setId(dto.id());
+            task.setTitle(dto.title());
+            task.setDescription(dto.description());
+            task.setUserId(dto.userId());
+
+            if (!task.getStatus().equals(dto.status())) {
+                task.setStatus(dto.status());
+                kafkaProducerService.sendMessage(taskMapper.toKafkaTaskDto(task));
+            }
         }
+
+        Task resultTask = taskRepository.save(task);
 
         return taskMapper.toTaskDto(resultTask);
     }
