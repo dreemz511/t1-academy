@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: t1-academy
+
+  #Mail config
+  mail:
+    host: smtp.yandex.ru
+    username: pbtop.no.reply@yandex.ru
+    password: ${MAIL_PASS}
+    protocol: smtps
+    test-connection: true
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  #Datasource configuration
+  datasource:
+    url: jdbc:postgresql://localhost/t1-academy
+    username: postgres
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+
+  #Flyway configuration
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+
+  #JPA
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+
+dreemz:
+  kafka:
+    boostrap-servers: localhost:9092
+    consumer:
+      group-id: task_group
+    topic:
+      name: task_topic

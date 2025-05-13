@@ -1,4 +1,4 @@
-package org.dreemz.t1academy;
+package org.dreemz.t1academy.util;
 
 import org.dreemz.t1academy.entity.Task;
 import org.springframework.data.jpa.domain.Specification;

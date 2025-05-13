@@ -1,7 +1,8 @@
 package org.dreemz.t1academy.service;
 
 import lombok.AllArgsConstructor;
-import org.dreemz.t1academy.TaskFilter;
+import org.dreemz.t1academy.kafka.KafkaProducerService;
+import org.dreemz.t1academy.util.TaskFilter;
 import org.dreemz.t1academy.aspect.annotation.ExceptionHandling;
 import org.dreemz.t1academy.aspect.annotation.LogAfterReturning;
 import org.dreemz.t1academy.aspect.annotation.LogBefore;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +26,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     @LogBefore
     @ExceptionHandling
@@ -42,9 +43,9 @@ public class TaskService {
     @LogBefore
     @ExceptionHandling
     public TaskDto getOne(Long id) {
-        Optional<Task> taskOptional = taskRepository.findById(id);
-        return taskMapper.toTaskDto(taskOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id))));
+        Task task = taskRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
+        return taskMapper.toTaskDto(task);
     }
 
     @LogBefore
@@ -65,8 +66,21 @@ public class TaskService {
 
         Task task = taskRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Task with id `%s` not found".formatted(id)));
-        taskMapper.updateWithNull(dto, task);
+
+        if (dto != null) {
+            task.setId(dto.id());
+            task.setTitle(dto.title());
+            task.setDescription(dto.description());
+            task.setUserId(dto.userId());
+
+            if (!task.getStatus().equals(dto.status())) {
+                task.setStatus(dto.status());
+                kafkaProducerService.sendMessage(taskMapper.toKafkaTaskDto(task));
+            }
+        }
+
         Task resultTask = taskRepository.save(task);
+
         return taskMapper.toTaskDto(resultTask);
     }
 

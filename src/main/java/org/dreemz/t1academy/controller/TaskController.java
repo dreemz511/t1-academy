@@ -1,7 +1,7 @@
 package org.dreemz.t1academy.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dreemz.t1academy.TaskFilter;
+import org.dreemz.t1academy.util.TaskFilter;
 import org.dreemz.t1academy.dto.TaskDto;
 import org.dreemz.t1academy.service.TaskService;
 import org.springframework.data.domain.Pageable;
